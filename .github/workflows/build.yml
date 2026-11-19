@@ -1,0 +1,32 @@
+name: Build ESP-Drone S3
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:v5.5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build firmware for S3
+        working-directory: Firmware/esp-drone
+        run: |
+          . /opt/esp/idf/export.sh
+          idf.py set-target esp32s3
+          idf.py build
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp-drone-s3-bin
+          path: |
+            Firmware/esp-drone/build/bootloader/bootloader.bin
+            Firmware/esp-drone/build/partition_table/partition-table.bin
+            Firmware/esp-drone/build/*.bin
