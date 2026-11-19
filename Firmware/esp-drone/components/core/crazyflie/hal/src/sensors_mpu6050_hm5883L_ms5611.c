@@ -375,23 +375,23 @@ void processAccGyroMeasurements(const uint8_t *buffer)
 
     /* sensors step 2.4 convert  digtal value to physical angle */
 #ifdef CONFIG_TARGET_ESPLANE_V1
-    sensorData.gyro.x = (gyroRaw.x - gyroBias.x) * SENSORS_DEG_PER_LSB_CFG;
+    sensorData.gyro.x = (gyroRaw.y - gyroBias.y) * SENSORS_DEG_PER_LSB_CFG;
 #else
-    sensorData.gyro.x = -(gyroRaw.x - gyroBias.x) * SENSORS_DEG_PER_LSB_CFG;
+    sensorData.gyro.x = -(gyroRaw.y - gyroBias.y) * SENSORS_DEG_PER_LSB_CFG;
 #endif
 
-    sensorData.gyro.y = (gyroRaw.y - gyroBias.y) * SENSORS_DEG_PER_LSB_CFG;
+    sensorData.gyro.y = -(gyroRaw.x - gyroBias.x) * SENSORS_DEG_PER_LSB_CFG;
     sensorData.gyro.z = (gyroRaw.z - gyroBias.z) * SENSORS_DEG_PER_LSB_CFG;
     /* sensors step 2.5 low pass filter */
     applyAxis3fLpf((lpf2pData *)(&gyroLpf), &sensorData.gyro);
 
 #ifdef CONFIG_TARGET_ESPLANE_V1
-    accScaled.x = (accelRaw.x) * SENSORS_G_PER_LSB_CFG / accScale;
+    accScaled.x = (accelRaw.y) * SENSORS_G_PER_LSB_CFG / accScale;
 #else
-    accScaled.x = -(accelRaw.x) * SENSORS_G_PER_LSB_CFG / accScale;   
+    accScaled.x = -(accelRaw.y) * SENSORS_G_PER_LSB_CFG / accScale;   
 #endif
 
-    accScaled.y = (accelRaw.y) * SENSORS_G_PER_LSB_CFG / accScale;
+    accScaled.y = -(accelRaw.x) * SENSORS_G_PER_LSB_CFG / accScale;
     accScaled.z = (accelRaw.z) * SENSORS_G_PER_LSB_CFG / accScale;
 
     /* sensors step 2.6 Compensate for a miss-aligned accelerometer. */
